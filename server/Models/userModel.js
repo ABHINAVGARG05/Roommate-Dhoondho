@@ -10,7 +10,6 @@ const UserSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
       minlength: 8,
     },
     firstname: {
@@ -24,6 +23,11 @@ const UserSchema = mongoose.Schema(
       default: null,
       minlength: 1,
       maxlength: 20,
+    },
+    googleId: {
+      type: String, 
+      unique: true,
+      sparse: true,
     },
     regnum: {
       type: String,

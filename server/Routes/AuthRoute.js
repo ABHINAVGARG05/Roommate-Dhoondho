@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import passport from "passport";
 import { vitMailFormat } from "../Middlewares/Format/vitMailFormat.js";
 import { rateLimiter_10min_10req, rateLimiter_10min_100req } from "../Middlewares/rateLimiter.js";
 import { loginUser, registerUser, verifyEmail, resendVerificationEmail, requestPasswordReset, updatePassword } from "../Controllers/AuthController.js";
@@ -31,5 +32,21 @@ router.post('/register', rateLimiter_10min_10req, vitMailFormat, async (req, res
   router.post('/update-password', rateLimiter_10min_100req, async (req, res) => {
     await updatePassword(req, res);
   });
+
+  router.get(
+    "/google",
+    passport.authenticate("google", { scope: ["profile", "email"] })
+  );
+
+  router.get(
+    "/google/callback",
+    passport.authenticate("google", {
+      failureRedirect: "/login", 
+    }),
+    (req, res) => {
+      res.redirect("/"); 
+    }
+  );
+  
 
 export default router;

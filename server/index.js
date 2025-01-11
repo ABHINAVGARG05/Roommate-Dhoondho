@@ -2,16 +2,23 @@ import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import passport from "passport"
+import session from "express-session"
 import cors from 'cors';
-import { CORSProtection } from './Middlewares/CORS_Protection.js'
-import { verifyJWT_withuserId, verifyJWTForGetRequest } from './Middlewares/verifyJWT.js';
+
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
 import AuthRoute from './Routes/AuthRoute.js'
 import UserRoute from './Routes/UserRoute.js'
 import RoomRoute from './Routes/RoomRoute.js'
 import RoommateRoute from './Routes/RoommateRoute.js'
 import ServerMsgRoute from './Routes/ServerMsgRoute.js'
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+
+import { CORSProtection } from './Middlewares/CORS_Protection.js'
+import { verifyJWT_withuserId, verifyJWTForGetRequest } from './Middlewares/verifyJWT.js';
+
+import "./Controllers/Auth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -68,6 +75,17 @@ mongoose
   app.get('/', (req, res) => {
     return res.render('index');
   });
+
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET || "your-secret-key",
+      resave: false,
+      saveUninitialized: false,
+    })
+  );
+
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   // usage of routes
   app.use('/auth', CORSProtection, AuthRoute)
