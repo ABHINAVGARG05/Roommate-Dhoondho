@@ -17,26 +17,26 @@ passport.use(
       callbackURL:process.env.GOOGLE_CALL_BACK_URL,
       passReqToCallback: true,
     },
-    async (profile, done) => {
-      try {
-        console.log(profile)
-        let user = await UserModel.findOne({ googleId: profile.id });
-
-        if (!user) {
-            const name = profile.given_name.split(" ")
+    async (request, accessToken, refreshToken, profile, done) => {
+        try {
+            console.log(profile)
+            let user = await UserModel.findOne({ googleId: profile.id });
+            console.log(profile)
+            if (!user) {
+                const name = profile.given_name.split(" ")
                 user = await UserModel.create({
-                googleId: profile.id,
-                username: profile.email,
-                firstname: [0],
-                lastname: name[name.length -1],
-                regnum: profile.family_name,
-                profilePicture: profile.picture,
-                isVerified: true, 
-            });
-        }
+                    googleId: profile.id,
+                    username: profile.email,
+                    firstname: [0],
+                    lastname: name[name.length -1],
+                    regnum: profile.family_name,
+                    profilePicture: profile.picture,
+                    isVerified: true, 
+                });
+            }
         return done(null, user);
-      } 
-      catch (err) {
+    }
+    catch (err) {
         return done(err, null);
       }
     }
