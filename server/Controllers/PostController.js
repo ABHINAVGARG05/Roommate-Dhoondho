@@ -1,16 +1,79 @@
 import PostModel from "../Models/postModel.js";
 import mongoose from "mongoose";
 import UserModel from "../Models/userModel.js";
+import {createChat}  from "./chatController.js";
+import errResponse from "../utils/errApiResponse.js";
+import apiResponse from "../utils/responseModel.js";
 
 // Create new Post
 export const createPost = async (req, res) => {
-  const newPost = new PostModel(req.body);
+  const {post, userId} = req.body;
+  console.log(post.desc)
+
+  if (!post, !userId) {
+    return res.json(new errResponse(
+      400,
+      null,
+      "user or post content missing"
+    ))
+  }
+
+  const  newPost = await new PostModel({
+    userId,
+    desc: post.desc,
+  })
 
   try {
-    await newPost.save();
-    res.status(200).json("Post created!");
+    const savedPost = await newPost.save();
+
+    const user = await UserModel.findById(userId).populate({
+      path: "post",
+      populate: {
+        path: "userId",
+        model: "Posts", 
+      },
+    });
+
+    console.log(user)
+
+  if (!user) {
+    return res.json(new errResponse(
+      400,
+      null,
+      "User not found"
+    ))
+  }
+  console.log("-------------------------")
+  console.log(user.post.length)
+  console.log("-------------------------")
+  if (user.post.length >= 3) {
+    return res.json(new errResponse(
+      400,
+      null,
+      "User cannot have more than 3 posts"
+    ))
+  }
+
+  if (!user.post.includes(savedPost._id)) {
+    user.post.push(savedPost._id);
+    await user.save();
+  }
+
+    console.log(userId)
+    const chat = await createChat(userId, savedPost._id)
+    
+    return res.status(200).json({
+      message: "Post and associated chat created successfully",
+      post: savedPost,
+      chat
+  });
   } catch (error) {
-    res.status(500).json(error);
+    console.log(error)
+    return res.json(new errResponse(
+      500,
+      null,
+      "cannot create post"
+    ))
   }
 };
 
@@ -54,6 +117,8 @@ export const deletePost = async (req, res) => {
     const post = await PostModel.findById(id);
     if (post.userId === userId) {
       await post.deleteOne();
+      user.post.remove(post._id)
+      await user.save()
       res.status(200).json("POst deleted successfully");
     } else {
       res.status(403).json("Action forbidden");

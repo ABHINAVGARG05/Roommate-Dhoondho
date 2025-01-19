@@ -27,11 +27,12 @@ passport.use(
                 user = await UserModel.create({
                     googleId: profile.id,
                     username: profile.email,
-                    firstname: [0],
+                    firstname: name[0],
                     lastname: name[name.length -1],
                     regnum: profile.family_name,
                     profilePicture: profile.picture,
                     isVerified: true, 
+                    activeChats:[],
                 });
             }
         return done(null, user);

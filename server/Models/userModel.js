@@ -96,6 +96,18 @@ const UserSchema = mongoose.Schema(
       type: Array,
       default: [],
     },
+    activeChats:[
+      {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Chat"
+      }
+    ],
+    post:[
+      {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Posts"
+      }
+    ]
   },
   { timestamps: true }
 );
