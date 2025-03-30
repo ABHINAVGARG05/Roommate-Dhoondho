@@ -3,11 +3,14 @@ import axios from "axios";
 import "../Cards/Cards.css";
 import Modal from "../../Components/Modal/Modal";
 import { ListingContext } from "../../Context/listing-context";
+import { useChat } from "../../Context/chat-context";
+import ChatWindow from "../Chat/ChatWindow";
 import { toast } from "react-toastify";
 import secureLocalStorage from "react-secure-storage";
 
 function DisplayRoommateListingCard() {
   const { showModal, selectRoommateDetail, selectRoommatePhone, selectRoommateEmail } = useContext(ListingContext);
+  const { activeChats, startChat, closeChat } = useChat();
   const profileData = JSON.parse(secureLocalStorage.getItem("profile"));
   const [roommates, setRoommates] = useState([]);
 
@@ -15,13 +18,10 @@ function DisplayRoommateListingCard() {
     const fetchData = async () => {
       try {
         const user_Id = profileData?.user?._id;
-        // console.log("user_Id recorded:", user_Id);
 
         const requestData = {
           userId: user_Id,
         };
-
-        // console.log("requestData:", requestData);
 
         const response = await axios.post(
           `${process.env.REACT_APP_SERVER_URL}/roommate/my/${user_Id}`,
@@ -50,13 +50,24 @@ function DisplayRoommateListingCard() {
         }
       );
 
-      // console.log("Roommate deleted:", response);
       toast.success("Roommate deleted successfully!");
       setRoommates((prevRoommates) =>
         prevRoommates.filter((roommate) => roommate?._id !== roommate_id)
       );
     } catch (error) {
-      // console.error("Error deleting roommate:", error);
+      toast.error("Failed to delete roommate");
+    }
+  };
+
+  const handleStartChat = async (roommate) => {
+    const chat = await startChat({
+      _id: roommate._id,
+      firstname: roommate.firstname,
+      lastname: roommate.lastname,
+    });
+    
+    if (chat) {
+      toast.success("Chat started successfully!");
     }
   };
 
@@ -68,28 +79,34 @@ function DisplayRoommateListingCard() {
           <span className="cards">
             <div className="main-card">
               <div className="card-details">
-              <div
-                className="card-img"
-                style={{
-                  backgroundImage: `url('https://static01.nyt.com/images/2020/04/19/magazine/19Ethicist/19Ethicist-jumbo.jpg')`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  // width: '132px',
-                  // height: '158px',
-                }}
-              ></div>
+                <div
+                  className="card-img"
+                  style={{
+                    backgroundImage: `url('https://static01.nyt.com/images/2020/04/19/magazine/19Ethicist/19Ethicist-jumbo.jpg')`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }}
+                ></div>
                 <div className="card-info">
                   <div className="card-informatios">
                     <div className="card-name">Roommate Posting</div>
-                    <div
-                      className="card-add"
-                      onClick={() => deleteRoommate(roommate?._id)}
-                    >
-                      <img
-                        src="./image/minus-icon.png"
-                        alt=""
-                        style={{ height: "24px", width: "24px" }}
-                      />
+                    <div className="card-actions">
+                      <button
+                        className="chat-button"
+                        onClick={() => handleStartChat(roommate)}
+                      >
+                        Chat
+                      </button>
+                      <div
+                        className="card-add"
+                        onClick={() => deleteRoommate(roommate?._id)}
+                      >
+                        <img
+                          src="./image/minus-icon.png"
+                          alt=""
+                          style={{ height: "24px", width: "24px" }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="card-preference">
@@ -163,6 +180,14 @@ function DisplayRoommateListingCard() {
             </div>
           </span>
         </div>
+      ))}
+      {activeChats.map((chat) => (
+        <ChatWindow
+          key={chat.id}
+          chatId={chat.id}
+          otherUser={chat.otherUser}
+          onClose={() => closeChat(chat.id)}
+        />
       ))}
     </>
   );

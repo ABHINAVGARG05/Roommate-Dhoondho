@@ -81,14 +81,14 @@
 .blue {
   height: 16px;
   width: 16px;
-  padding: "0 0 0 8px  ";
-  color: "#06105a";
+  padding: 0 0 0 8px;
+  color: #06105a;
 }
 .white {
   height: 16px;
   width: 16px;
-  padding: "0 0 0 8px";
-  color: "#ffffff";
+  padding: 0 0 0 8px;
+  color: #ffffff;
 }
 
 .bookmarks {

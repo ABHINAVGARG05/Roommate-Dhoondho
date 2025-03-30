@@ -109,6 +109,26 @@
   background: rgba(6, 16, 90, 0.1);
 }*/
 
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-button {
+  background: #FF8C00;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.chat-button:hover {
+  background: #FF6B00;
+}
 
 @media screen and (max-width: 468px) {
   .main-card {

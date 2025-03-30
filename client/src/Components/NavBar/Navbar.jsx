@@ -9,7 +9,9 @@ import "./Navbar.css";
 import secureLocalStorage from "react-secure-storage";
 
 function Navbar() {
+  // console.log("Hello", secureLocalStorage.getItem("profile"))
   const profileData = JSON.parse(secureLocalStorage.getItem("profile")) || {};
+  // console.log(profileData);
   const isProfileSet = profileData && !!profileData.user?.firstname;
   const isAdmin = profileData?.user?.isAdmin;
   const [navbar, setHeader] = useState("navbar");
