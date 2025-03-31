@@ -77,6 +77,10 @@ const UserSchema = mongoose.Schema(
     about: {
       type: String,
     },
+    isProfileComplete:{
+      type:Boolean,
+      default: false,
+    },
     isVerified: {
       type: Boolean,
       default: false,
