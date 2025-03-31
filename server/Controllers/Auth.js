@@ -34,7 +34,7 @@ passport.use(
         }
 
         // Generate JWT Token
-        const token = jwt.sign({ id: user._id, email: user.username, firstname: user.firstname, lastname: user.lastname, gender: user.gender }, process.env.JWTKEY, { expiresIn: "7d" });
+        const token = jwt.sign({ id: user._id, email: user.username, firstname: user.firstname, lastname: user.lastname, gender: user.gender, isProfileComplete: user.isProfileComplete }, process.env.JWTKEY, { expiresIn: "7d" });
         console.log(token)
         return done(null, { user, token });
       } catch (err) {

@@ -17,7 +17,7 @@ function DisplayRoommateListingCard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const user_Id = profileData?.user?._id;
+        const user_Id = profileData?.user?._id || profileData?.id;
 
         const requestData = {
           userId: user_Id,

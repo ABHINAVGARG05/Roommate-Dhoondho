@@ -90,9 +90,9 @@ function Modal() {
               <br /><br /></>}
               
               <b>Details: </b>
-              <p>
+              <span>
                 {descriptionOnly ? descriptionOnly : <small><i><font color="grey">(empty)</font></i></small>}
-              </p>
+              </span>
             </p>
           </div>
           <button

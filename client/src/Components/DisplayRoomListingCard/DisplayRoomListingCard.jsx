@@ -14,7 +14,7 @@ function DisplayRoomListingCard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const user_Id = profileData?.id;
+        const user_Id = profileData?.id || profileData?.user?._id;
         // console.log("user_Id recorded:", user_Id);
 
         const requestData = {

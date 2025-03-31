@@ -31,7 +31,7 @@
 .card-name {
   width: 14rem;
   color: #000071;
-  font-size: large;
+  font-size: medium;
   font-weight: 600;
   font-family: Causten-Semi-Bold, Helvetica;
 }
@@ -202,6 +202,7 @@
     font-size: xx-small;
   }
   .card-preference-title {
+    font-size: xx-small;
     padding-bottom: 5px;
   }
   .card-hr hr {

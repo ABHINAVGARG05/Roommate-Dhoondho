@@ -84,7 +84,7 @@ function Modal2() {
               <br /><br /></>}
               
               <b>Details: </b>
-              <p>
+              <p className="h-20 overflow-y-scroll">
                 {descriptionOnly ? descriptionOnly : <small><i><font color="grey">(empty)</font></i></small>}
               </p>
             </p>
