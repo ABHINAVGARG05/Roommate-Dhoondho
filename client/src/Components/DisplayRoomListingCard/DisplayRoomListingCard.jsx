@@ -14,7 +14,7 @@ function DisplayRoomListingCard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const user_Id = profileData?.user?._id;
+        const user_Id = profileData?.id;
         // console.log("user_Id recorded:", user_Id);
 
         const requestData = {
@@ -35,11 +35,11 @@ function DisplayRoomListingCard() {
     };
 
     fetchData();
-  }, [profileData?.user?._id]);
+  }, [profileData?.id]);
 
   const deleteRoom = async (room_id) => {
     try {
-      const user_Id = profileData?.user?._id;
+      const user_Id = profileData?.id;
       const requestBody = {
         userId: user_Id,
       };

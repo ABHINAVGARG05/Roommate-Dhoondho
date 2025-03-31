@@ -28,7 +28,9 @@ function DisplayRoommateCard() {
     setPage(1);
     setResetPaginationKey((prevKey) => prevKey + 1);
   };
+  console.log(secureLocalStorage.getItem("profile"))
   const profileData = JSON.parse(secureLocalStorage.getItem("profile"));
+  //console.log(profileData)
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -232,6 +234,7 @@ function DisplayRoommateCard() {
   }, [page, selectedBlock, selectedYear, rankOrder]);
 
   const fetchFollowing = () => {
+    console.log(profileData?.user?._id)
     return axios
       .get(`${process.env.REACT_APP_SERVER_URL}/user/${profileData?.user?._id}`)
       .then((response) => {
@@ -287,7 +290,7 @@ function DisplayRoommateCard() {
             (userGender === "M" && otherUserGender === "M") ||
             (userGender === "F" && otherUserGender === "F")
           ) {
-            let myUserId = profileData?.user?._id;
+            let myUserId = profileData?.id;
             let requestBody = {
               roommateId: otherUserId,
             };
@@ -350,7 +353,7 @@ function DisplayRoommateCard() {
             (userGender === "M" && roomGender === "M") ||
             (userGender === "F" && roomGender === "F")
           ) {
-            let myUserId = profileData?.user?._id;
+            let myUserId = profileData?.id;
             let requestBody = {
               roomId: otherRoomId,
             };

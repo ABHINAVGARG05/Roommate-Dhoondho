@@ -10,6 +10,7 @@ import { reducers } from "../reducers";
 function saveToLocalStorage(store) {
   try {
       const serializedStore = JSON.stringify(store);
+      // console.log(serializedStore)
       window.secureLocalStorage.setItem('store', serializedStore);
   } catch(e) {
     return undefined;

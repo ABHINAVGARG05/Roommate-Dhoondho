@@ -17,6 +17,8 @@ export const verifyJWT_withuserId = (req, res, next) => {
     // Verify the JWT token
     const decodedToken = jwt.verify(token, process.env.JWTKEY);
     console.log('decodedToken:', decodedToken);
+    console.log(req.body.userId)
+    console.log(decodedToken.id)
 
     // Check if the "id" in the token matches the "userId" in the request body
     if (decodedToken.id !== req.body.userId) {
@@ -53,6 +55,8 @@ export const verifyJWT_withcurrentUserId = (req, res, next) => {
     console.log('decodedToken:', decodedToken);
 
     // Check if the "id" in the token matches the "currentUserId" in the request body
+    console.log("yoo ",decodedToken.id);
+    console.log("boo ",req.body.currentUserId);
     if (decodedToken.id !== req.body.currentUserId) {
       return res.status(403).json({ message: 'Forbidden: Token does not match currentUserId' });
     }
@@ -105,6 +109,7 @@ export const verifyJWT_withadminUsername = (req, res, next) => {
 export const verifyJWTForGetRequest = (req, res, next) => {
 
   // Extract the JWT token from the Authorization header
+  console.log(req.headers)
   const token = req.headers.x_authorization?.split(' ')[1];
 
   if (!token) {

@@ -29,7 +29,7 @@ const profilePage = '/profile';
 Hotjar.stateChange(profilePage);
 
 const Profilepage = () => {
-  const profileData = JSON.parse(secureLocalStorage.getItem("profile"));
+  const profileData = JSON.parse(secureLocalStorage.getItem("profile"))
   const navigate = useNavigate();
   const [additionalData, setAdditionalData] = useState({});
   const [firstName, setFirstName] = useState("");
@@ -44,9 +44,7 @@ const Profilepage = () => {
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [formEvent, setFormEvent] = useState(null);
   const [showInfoLabel, setShowInfoLabel] = useState(false);
-  const [isGenderEditable, setIsGenderEditable] = useState(
-    profileData?.user?.gender === null
-  );
+  const [isGenderEditable, setIsGenderEditable] = useState(true);
   // const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isListingButtonActive, setIsListingButtonActive] = useState(false);
@@ -61,6 +59,7 @@ const Profilepage = () => {
 
         if (response.data) {
           setServerMessage(response.data);
+          console.log(response);
         }
       } catch (error) {
         // Handle errors if needed
@@ -74,11 +73,14 @@ const Profilepage = () => {
   // Constants for preventing XSS Attacks
 
 
-  Hotjar.identify(profileData?.user?.username, {
-    first_name: profileData?.user?.firstname,
-    last_name: profileData?.user?.lastname,
-    gender: profileData?.user?.gender
+  Hotjar.identify(profileData?.username, {
+    first_name: profileData?.firstname,
+    last_name: profileData?.lastname,
+    gender: profileData?.gender
   });
+
+  console.log("HI", profileData, Hotjar);
+  console.log("bfew;o", secureLocalStorage.getItem("profile"))
 
   useEffect(() => {
     if (!profileData) {
@@ -112,7 +114,10 @@ const Profilepage = () => {
 
   const handleConfirmationClose = (confirmed) => {
     setOpenConfirmation(false);
+    console.log("hi");
+    console.log("g1: ",gender);
     if (confirmed && formEvent && gender) {
+      console.log("Submitting form with gender:", gender);
       submituserRegistrationForm(formEvent, gender);
     }
   };
@@ -122,14 +127,22 @@ const Profilepage = () => {
   };
 
   console.log("user specific data: ", profileData);
+  console.log("id", profileData?.id)
 
   useEffect(() => {
+    console.log("token:", secureLocalStorage.getItem("token"))
     axios
       .get(
-        `${process.env.REACT_APP_SERVER_URL}/user/personal/${profileData?.user?._id}`
+        `${process.env.REACT_APP_SERVER_URL}/user/personal/${profileData?.id}`,
+        {
+          headers: {
+            "x_authorization": `Bearer ${JSON.parse(secureLocalStorage.getItem("auth_token"))}`
+          }
+        }
       )
       .then((response) => {
         const data = response.data;
+        console.log("Fetched user data:", data);
         setAdditionalData(data);
         setFirstName(data.firstname);
         setLastName(data.lastname);
@@ -249,37 +262,34 @@ const Profilepage = () => {
 
   const submituserRegistrationForm = (e, gender) => {
     e.preventDefault();
-    // if (!validatePassword()) {
-    //   toast.error("Please enter your password for confirmation.");
-    //   return;
-    // }
-    console.log("submitting form gender", gender);
     if (validateForm()) {
       const updatedData = {
-        currentUserId: profileData?.user?._id,
-        // password: password,
-        // username: email,
+        currentUserId: profileData?.id,
         firstname: firstName,
         lastname: lastName,
         regnum: regnum,
         gender: gender,
         rank: rank,
         mobile: contactNumber,
-        // currentUserAdminStatus: false,
       };
+
+      console.log("Updating profile with data:", updatedData);
 
       axios
         .put(
-          `${process.env.REACT_APP_SERVER_URL}/user/${profileData?.user?._id}`,
-          updatedData
+          `${process.env.REACT_APP_SERVER_URL}/user/${profileData?.id}`,
+          updatedData,
+          {
+            headers: {
+              "x_authorization": `Bearer ${JSON.parse(secureLocalStorage.getItem("auth_token"))}`
+            }
+          }
         )
         .then((response) => {
-          // console.log("Profile updated successfully:", response.data);
+          console.log("Profile update response:", response.data);
           setChangesMade(true);
           toast.success("Changes saved successfully!");
-          // setNotification("Changes saved successfully!");
           secureLocalStorage.setItem("profile", JSON.stringify(response.data));
-          // window.location.reload();
           navigate('/home');
         })
         .catch((error) => {
@@ -321,7 +331,7 @@ const Profilepage = () => {
                     onSubmit={(e) => {
                       e.preventDefault();
                       if (validateForm()) {
-                        if (profileData.user.gender === null) {
+                        if (!profileData?.gender) {
                           handleConfirmationOpen(e);
                         } else {
                           submituserRegistrationForm(e);

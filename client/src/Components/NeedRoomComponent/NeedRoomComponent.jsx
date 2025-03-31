@@ -191,6 +191,7 @@ export const NeedRoomComponent = () => {
 
     try {
       let userId = profileData?.user?._id;
+      console.log(userId);
       const requestData = {
         userId: userId,
       };

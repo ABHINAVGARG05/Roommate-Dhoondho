@@ -8,6 +8,10 @@ const UserSchema = mongoose.Schema(
       unique: true,
       match: /^[a-zA-Z0-9._%+-]+@vitstudent\.ac\.in$/,
     },
+    isProfileComplete: {
+      type: Boolean,
+      default: false,
+    },
     password: {
       type: String,
       minlength: 8,

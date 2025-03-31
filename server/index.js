@@ -18,7 +18,7 @@ import RoommateRoute from './Routes/RoommateRoute.js'
 import ServerMsgRoute from './Routes/ServerMsgRoute.js'
 import {initSocketIO} from './Middlewares/socketIO.js'
 
-import { CORSProtection } from './Middlewares/CORS_Protection.js'
+//import  } from './Middlewares/CORS_Protection.js'
 import { verifyJWT_withuserId, verifyJWTForGetRequest } from './Middlewares/verifyJWT.js';
 
 import "./Controllers/Auth.js";
@@ -62,7 +62,13 @@ initSocketIO(server);
 app.use(express.json())
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors())
+// app.use(cors({
+//   origin:  "*", // Your frontend URL
+//   credentials: true, // Allows cookies if needed
+//   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+//   allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+// }));
+app.use(cors());
 dotenv.config();
 
 mongoose
@@ -101,9 +107,13 @@ mongoose
   app.use(passport.session());
 
   // usage of routes
-  app.use('/auth', CORSProtection, AuthRoute)
-  app.use('/user', CORSProtection, verifyJWTForGetRequest, UserRoute)
-  app.use('/room', CORSProtection, verifyJWTForGetRequest, RoomRoute)
-  app.use('/roommate', CORSProtection, verifyJWTForGetRequest, RoommateRoute)
-  app.use('/server-messages', CORSProtection, ServerMsgRoute)
+  app.use('/auth', AuthRoute)
+  app.use('/user', verifyJWTForGetRequest, UserRoute)
+  app.use('/room', verifyJWTForGetRequest, RoomRoute)
+  app.use('/roommate', verifyJWTForGetRequest, RoommateRoute)
+  app.use('/server-messages', ServerMsgRoute)
   app.use('/post',PostRoutes)
+
+  app.use("*", ()=>{
+    res.send("404 - Page not found");
+  })

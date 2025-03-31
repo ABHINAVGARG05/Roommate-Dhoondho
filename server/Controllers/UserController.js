@@ -196,7 +196,7 @@ export const updateUser = async (req, res) => {
         });
 
         // Update the gender field only if it is currently null
-        if (user.gender === null) {
+        if (user.gender === '' || null) {
           updatedFields['gender'] = req.body['gender'];
         } else {
           delete updatedFields.gender;
