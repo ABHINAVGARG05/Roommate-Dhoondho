@@ -16,7 +16,6 @@ import UserRoute from './Routes/UserRoute.js'
 import RoomRoute from './Routes/RoomRoute.js'
 import RoommateRoute from './Routes/RoommateRoute.js'
 import ServerMsgRoute from './Routes/ServerMsgRoute.js'
-import {initSocketIO} from './Middlewares/socketIO.js'
 
 //import  } from './Middlewares/CORS_Protection.js'
 import { verifyJWT_withuserId, verifyJWTForGetRequest } from './Middlewares/verifyJWT.js';
@@ -55,8 +54,6 @@ const __dirname = dirname(__filename);
 const app = express();
 const server = http.createServer(app)
 
-initSocketIO(server);
-
 
 // Middleware
 app.use(express.json())
@@ -88,7 +85,7 @@ mongoose
   app.set("view engine", "ejs");
   app.use(express.static(__dirname + "public"));
   app.get('/', (req, res) => {
-    return res.render('index');
+    return res.json("Backend Server By Abhinav Garg --> TechHead MFC");
   });
 
   app.use(
@@ -114,6 +111,5 @@ mongoose
   app.use('/server-messages', ServerMsgRoute)
   app.use('/post',PostRoutes)
 
-  app.use("*", ()=>{
-    res.send("404 - Page not found");
-  })
+
+  export default app;

@@ -46,7 +46,7 @@ router.post('/register', rateLimiter_10min_10req, vitMailFormat, async (req, res
     (req, res) => {
       const token = req.user.token;
       console.log("token1: ", token)
-      res.redirect(`http://localhost:3000/?token=${token}`); 
+      res.redirect(`${process.env.CLIENT_URL}/?token=${token}`); 
     }
   );
   
