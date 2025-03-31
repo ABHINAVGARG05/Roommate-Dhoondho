@@ -52,7 +52,7 @@ const __dirname = dirname(__filename);
 
 // Routes
 const app = express();
-const server = http.createServer(app)
+// const server = http.createServer(app)
 
 
 // Middleware
@@ -74,16 +74,14 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() =>
-    server.listen(process.env.PORT, () =>
-      console.log(`Listening at ${process.env.PORT}`)
-    )
+    console.log("DB Connected Successfully")
   )
   .catch((error) => console.log(error));
 
   // Static Route
-  app.set("views", __dirname + "/views");
-  app.set("view engine", "ejs");
-  app.use(express.static(__dirname + "public"));
+  // app.set("views", __dirname + "/views");
+  // app.set("view engine", "ejs");
+  // app.use(express.static(__dirname + "/public"));
   app.get('/', (req, res) => {
     return res.json("Backend Server By Abhinav Garg --> TechHead MFC");
   });
@@ -111,5 +109,6 @@ mongoose
   app.use('/server-messages', ServerMsgRoute)
   app.use('/post',PostRoutes)
 
-
-  export default app;
+  app.listen(process.env.PORT, () => {
+    console.log(`Server is running on port ${process.env.PORT}`);
+  });
