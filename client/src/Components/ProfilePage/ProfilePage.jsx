@@ -44,7 +44,7 @@ const Profilepage = () => {
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [formEvent, setFormEvent] = useState(null);
   const [showInfoLabel, setShowInfoLabel] = useState(false);
-  const [isGenderEditable, setIsGenderEditable] = useState(true);
+  const [isGenderEditable, setIsGenderEditable] = useState( profileData?.gender === "" || profileData?.user?.gender === "");
   // const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isListingButtonActive, setIsListingButtonActive] = useState(false);
@@ -114,11 +114,13 @@ const Profilepage = () => {
 
   const handleConfirmationClose = (confirmed) => {
     setOpenConfirmation(false);
+
     console.log("hi");
     console.log("g1: ",gender);
     if (confirmed && formEvent && gender) {
       console.log("Submitting form with gender:", gender);
       submituserRegistrationForm(formEvent, gender);
+      secureLocalStorage.setItem("isProfileComplete", true);
     }
   };
   
@@ -127,7 +129,7 @@ const Profilepage = () => {
   };
 
   console.log("user specific data: ", profileData);
-  console.log("id", profileData?.id)
+  console.log("id", profileData?.id || profileData?.user?._id)
 
   useEffect(() => {
     console.log("token:", secureLocalStorage.getItem("token"))
@@ -264,20 +266,21 @@ const Profilepage = () => {
     e.preventDefault();
     if (validateForm()) {
       const updatedData = {
-        currentUserId: profileData?.id,
-        firstname: firstName,
+        currentUserId: profileData?.id || profileData?.user?._id,
+        firstname: firstName || profileData?.user?.firstname,
         lastname: lastName,
         regnum: regnum,
         gender: gender,
         rank: rank,
         mobile: contactNumber,
+        isProfileComplete: true,
       };
 
       console.log("Updating profile with data:", updatedData);
 
       axios
         .put(
-          `${process.env.REACT_APP_SERVER_URL}/user/${profileData?.id}`,
+          `${process.env.REACT_APP_SERVER_URL}/user/${profileData?.id || profileData?.user?._id}`,
           updatedData,
           {
             headers: {
@@ -351,8 +354,8 @@ const Profilepage = () => {
                           <input
                             type="text"
                             name="firstname"
-                            value={firstName}
-                            onChange={(e) => {
+                            value={firstName || profileData?.user?.firstname}
+                            onChange={(e) => { 
                               handleChange(e);
                               setFirstName(e.target.value);
                               setChangesMade(true);
@@ -365,7 +368,7 @@ const Profilepage = () => {
                           <input
                             type="text"
                             name="lastname"
-                            value={lastName}
+                            value={lastName || profileData?.user?.lastname}
                             onChange={(e) => {
                               handleChange(e);
                               setLastName(e.target.value);
@@ -422,7 +425,7 @@ const Profilepage = () => {
                                 data-gender="M"
                                 name="gender"
                                 className={`mr-6  bg-[#D9D9D9] rounded-[10px] py-2 px-8 text-center cursor-pointer female ${
-                                  fields.gender === "M" ? "border-2 border-black" : ""
+                                  fields.gender === "M" || profileData?.user?.gender === "M" ? "border-2 border-black" : ""
                                 }`}
                                 onClick={(e) => {
                                   if (isGenderEditable) {
@@ -440,7 +443,7 @@ const Profilepage = () => {
                                 data-gender="F"
                                 name="gender"
                                 className={`bg-[#D9D9D9] rounded-[10px] py-2 px-8 text-center cursor-pointer female ${
-                                  fields.gender === "F" ? "border-2 border-black" : ""
+                                  fields.gender === "F" || profileData?.user?.gender === "F"? "border-2 border-black" : ""
                                 }`}
                                 onClick={(e) => {
                                   if (isGenderEditable) {
